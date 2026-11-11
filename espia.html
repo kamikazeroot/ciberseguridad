@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Verificación de conexión</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI",system-ui,Arial,sans-serif;background:#0c1116;color:#e7edf3;
+    min-height:100vh;padding:20px}
+  .tag{background:#c0392b;color:#fff;font-weight:700;font-size:12px;letter-spacing:.5px;padding:5px 14px;
+    border-radius:20px;display:inline-block;margin-bottom:16px}
+  h1{font-size:23px;margin-bottom:6px}
+  .sub{color:#9fb0c0;font-size:14px;margin-bottom:18px}
+  .row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #1e2a36;font-size:15px}
+  .row .k{color:#9fb0c0} .row .v{font-weight:600;text-align:right;max-width:62%;word-break:break-word}
+  .load{color:#6fe0a0}
+  .box{background:#12603f22;border:1px solid #1e7a4e;border-radius:14px;padding:16px;margin-top:20px}
+  .box h2{font-size:16px;color:#6fe0a0;margin-bottom:8px}
+  .box p{font-size:14px;line-height:1.55;color:#d7e2ec;margin:6px 0}
+  .reveal{background:#7a1414;border-color:#a33} .reveal h2{color:#ff9b9b}
+</style>
+</head>
+<body>
+<div class="tag">● SIMULACIÓN · DEMO DE CLASE</div>
+<h1>No he escrito nada… y ya sé esto de ti</h1>
+<div class="sub">Con solo abrir este enlace, una web puede leer todo esto:</div>
+
+<div id="datos">
+  <div class="row"><span class="k">Tu dispositivo</span><span class="v load" id="disp">leyendo…</span></div>
+  <div class="row"><span class="k">Navegador</span><span class="v load" id="nav">leyendo…</span></div>
+  <div class="row"><span class="k">Idioma</span><span class="v load" id="idi">leyendo…</span></div>
+  <div class="row"><span class="k">Zona horaria</span><span class="v load" id="tz">leyendo…</span></div>
+  <div class="row"><span class="k">Pantalla</span><span class="v load" id="scr">leyendo…</span></div>
+  <div class="row"><span class="k">Batería</span><span class="v load" id="bat">leyendo…</span></div>
+  <div class="row"><span class="k">Tu IP pública</span><span class="v load" id="ip">consultando…</span></div>
+  <div class="row"><span class="k">Zona (según IP)</span><span class="v load" id="loc">consultando…</span></div>
+  <div class="row"><span class="k">Tu operador / red</span><span class="v load" id="isp">consultando…</span></div>
+</div>
+
+<div class="box reveal">
+  <h2>🎣 Y esto es solo abrir el enlace</h2>
+  <p>No has rellenado nada y una web ya sabe tu móvil, tu zona y tu IP. Imagina si además metes tus datos.</p>
+  <p><b>Protégete:</b> una VPN oculta tu IP y tu zona; revisa los permisos de las webs; y desconfía de enlaces que no esperabas.</p>
+  <p style="color:#9fb0c0;font-size:12px">Tranquilo: nada de esto se guarda ni se envía a nadie. Se te muestra solo a ti, en tu pantalla. Es para aprender.</p>
+</div>
+
+<script>
+  function set(id,v){const e=document.getElementById(id);e.textContent=v;e.classList.remove("load");}
+  // Dispositivo / navegador a partir del user agent
+  var ua=navigator.userAgent;
+  var disp="Desconocido";
+  if(/iPhone/.test(ua))disp="iPhone (iOS)";
+  else if(/iPad/.test(ua))disp="iPad (iOS)";
+  else if(/Android/.test(ua)){var m=ua.match(/Android[^;]*;\s*([^)]+?)\s*(?:Build|\))/);disp="Android"+(m?" · "+m[1]:"");}
+  else if(/Windows/.test(ua))disp="PC Windows";
+  else if(/Mac/.test(ua))disp="Mac";
+  set("disp",disp);
+  var nav="Navegador";
+  if(/Edg\//.test(ua))nav="Edge"; else if(/Chrome\//.test(ua))nav="Chrome"; else if(/Firefox\//.test(ua))nav="Firefox"; else if(/Safari\//.test(ua))nav="Safari";
+  set("nav",nav);
+  set("idi",(navigator.language||"—"));
+  try{set("tz",Intl.DateTimeFormat().resolvedOptions().timeZone||"—");}catch(e){set("tz","—");}
+  set("scr",screen.width+" × "+screen.height+" px");
+  // Batería
+  if(navigator.getBattery){navigator.getBattery().then(function(b){set("bat",Math.round(b.level*100)+"%"+(b.charging?" (cargando)":""));}).catch(function(){set("bat","no disponible");});}
+  else set("bat","no disponible");
+  // IP + zona (servicio público de info de IP)
+  fetch("https://ipapi.co/json/").then(r=>r.json()).then(function(d){
+    set("ip",d.ip||"—");
+    set("loc",[d.city,d.region,d.country_name].filter(Boolean).join(", ")||"—");
+    set("isp",d.org||"—");
+  }).catch(function(){
+    fetch("https://api.ipify.org?format=json").then(r=>r.json()).then(function(d){set("ip",d.ip||"—");}).catch(function(){set("ip","no disponible");});
+    set("loc","no disponible"); set("isp","no disponible");
+  });
+</script>
+</body>
+</html>

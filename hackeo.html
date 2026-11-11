@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Alerta de seguridad</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI",system-ui,Arial,sans-serif;min-height:100vh;
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#fff;transition:background .4s}
+  body.hack{background:linear-gradient(160deg,#7b1010,#2e0606)}
+  body.reveal{background:linear-gradient(160deg,#12603f,#0b3b2e)}
+  .wrap{max-width:460px}
+  .big{font-size:62px;margin-bottom:10px}
+  h1{font-size:26px;margin-bottom:12px;line-height:1.25}
+  p{font-size:16px;line-height:1.55;margin:10px 0}
+  .t{font-size:30px;font-weight:800;margin:6px 0}
+  .card{background:#ffffff14;border-radius:16px;padding:18px;margin-top:18px;text-align:left}
+  .card ul{margin:6px 0 0;padding-left:20px}.card li{margin:7px 0;font-size:15px}
+  .safe{font-size:13px;opacity:.85;margin-top:14px}
+  .tap{font-size:13px;opacity:.85;margin-top:18px}
+  .tag{position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#00000044;color:#fff;font-weight:700;font-size:12px;padding:5px 14px;border-radius:20px}
+</style>
+</head>
+<body class="hack">
+<div class="tag">SIMULACIÓN · DEMO DE CLASE</div>
+
+<div class="wrap" id="hack">
+  <div class="big">☠️</div>
+  <h1>TU MÓVIL HA SIDO HACKEADO</h1>
+  <p>Se ha detectado un virus. Para desbloquear tu dispositivo, paga antes de:</p>
+  <div class="t" id="cd">05:00</div>
+  <p class="tap">Toca la pantalla para continuar…</p>
+</div>
+
+<div class="wrap" id="reveal" style="display:none">
+  <div class="big">🎣</div>
+  <h1>¡Tranquilo, es una simulación!</h1>
+  <p>Tu móvil está perfecto. Esto es una demostración de clase.</p>
+  <p>Así funciona el <b>scareware</b>: te asusta (hasta hace vibrar el móvil) para que pagues con prisa.</p>
+  <div class="card">
+    <ul>
+      <li>Ninguna web puede "hackear" tu móvil solo por abrirla.</li>
+      <li>Nadie oficial te bloquea el teléfono y te pide dinero.</li>
+      <li>Si ves algo así: no pagues, cierra el navegador y no toques enlaces.</li>
+    </ul>
+  </div>
+  <p class="safe">No se ha instalado nada ni se recoge ningún dato. Es solo para aprender.</p>
+</div>
+
+<script>
+  function vibra(){ try{ if(navigator.vibrate) navigator.vibrate([400,120,400,120,600]); }catch(e){} }
+  // intenta vibrar al cargar y, seguro, al primer toque
+  vibra();
+  window.addEventListener("touchstart",vibra,{once:true});
+  window.addEventListener("click",vibra,{once:true});
+
+  // cuenta atrás
+  var s=300, cd=document.getElementById("cd");
+  var iv=setInterval(function(){ s--; if(s<0)s=0;
+    cd.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+    if(s<=0)clearInterval(iv);
+  },1000);
+
+  // revela a los 4 segundos (o al tocar)
+  function revelar(){ try{if(navigator.vibrate)navigator.vibrate(0);}catch(e){}
+    document.body.className="reveal";
+    document.getElementById("hack").style.display="none";
+    document.getElementById("reveal").style.display="block";
+  }
+  setTimeout(revelar,4000);
+</script>
+</body>
+</html>

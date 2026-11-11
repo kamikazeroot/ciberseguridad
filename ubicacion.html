@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Verifica tu zona</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI",system-ui,Arial,sans-serif;background:#0c1116;color:#e7edf3;
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+  .tag{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#c0392b;color:#fff;font-weight:700;
+    font-size:12px;letter-spacing:.5px;padding:5px 14px;border-radius:20px}
+  .big{font-size:54px;margin-bottom:10px}
+  h1{font-size:23px;margin-bottom:10px}
+  p{font-size:15px;line-height:1.55;color:#c3d0dc;max-width:440px;margin:8px 0}
+  button{margin-top:18px;border:none;border-radius:10px;padding:14px 22px;font-size:16px;font-weight:700;
+    background:#2b6cf0;color:#fff;cursor:pointer}
+  .box{background:#12603f22;border:1px solid #1e7a4e;border-radius:14px;padding:18px;margin-top:22px;max-width:460px;text-align:left}
+  .box h2{font-size:16px;color:#6fe0a0;margin-bottom:8px}
+  .box.mal{background:#7a1414;border-color:#a33} .box.mal h2{color:#ff9b9b}
+  .mono{font-family:Consolas,monospace}
+  .safe{color:#9fb0c0;font-size:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="tag">● SIMULACIÓN · DEMO DE CLASE</div>
+
+<div id="paso1">
+  <div class="big">📍</div>
+  <h1>Comprueba tu zona</h1>
+  <p>Para "mejorar tu experiencia", esta web necesita saber dónde estás.</p>
+  <button onclick="pedir()">Permitir y continuar</button>
+</div>
+
+<div id="paso2" style="display:none">
+  <div class="big">🎣</div>
+  <h1 id="t2"></h1>
+  <div class="box" id="caja"></div>
+</div>
+
+<script>
+  function mostrar(titulo,clase,html){
+    document.getElementById("paso1").style.display="none";
+    document.getElementById("paso2").style.display="block";
+    document.getElementById("t2").textContent=titulo;
+    var c=document.getElementById("caja"); c.className="box "+clase; c.innerHTML=html;
+  }
+  function pedir(){
+    if(!navigator.geolocation){ mostrar("Sin ubicación","", "<p>Tu navegador no da la ubicación. Mejor así.</p>"); return; }
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var la=pos.coords.latitude.toFixed(4), lo=pos.coords.longitude.toFixed(4);
+      mostrar("¡Le has dado tu ubicación!","mal",
+        "<h2>Acabas de compartir dónde estás</h2>"+
+        "<p>Con un clic, esta web (que no conoces) ya sabe tu posición:</p>"+
+        "<p class='mono'>"+la+", "+lo+"</p>"+
+        "<p>Un estafador haría lo mismo para localizarte o para hacer un engaño más creíble.</p>"+
+        "<p><b>Protégete:</b> da ubicación solo a apps de confianza y cuando de verdad haga falta. Ante la duda, di que NO.</p>"+
+        "<p class='safe'>Nada se ha guardado ni enviado: se te muestra solo a ti. Es para aprender.</p>");
+    }, function(){
+      mostrar("¡Bien hecho!","",
+        "<h2>Has dicho que no 👏</h2>"+
+        "<p>Acabas de hacer justo lo correcto: no dar tu ubicación a una web que no conoces.</p>"+
+        "<p>Da permiso solo a apps de confianza y cuando de verdad lo necesiten.</p>"+
+        "<p class='safe'>Esto era una simulación de clase. No se recoge ningún dato.</p>");
+    });
+  }
+</script>
+</body>
+</html>
