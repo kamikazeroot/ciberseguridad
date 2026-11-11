@@ -42,7 +42,8 @@
 <div class="box reveal">
   <h2>🎣 Y esto es solo abrir el enlace</h2>
   <p>No has rellenado nada y una web ya sabe tu móvil, tu zona y tu IP. Imagina si además metes tus datos.</p>
-  <p><b>Protégete:</b> una VPN oculta tu IP y tu zona; revisa los permisos de las webs; y desconfía de enlaces que no esperabas.</p>
+  <p>Juntando muchos de estos datos (pantalla, idioma, zona, batería…) una web crea tu <b>huella digital</b> y te reconoce <b>sin cookies</b>. Por eso un buen navegador (como Brave) <b>falsea la batería</b> para protegerte: el dato que ves arriba está inventado por tu propio navegador.</p>
+  <p><b>Protégete:</b> usa un navegador que respete tu privacidad (Brave, Firefox), una VPN oculta tu IP y tu zona, revisa los permisos de las webs y desconfía de enlaces que no esperabas.</p>
   <p style="color:#9fb0c0;font-size:12px">Tranquilo: nada de esto se guarda ni se envía a nadie. Se te muestra solo a ti, en tu pantalla. Es para aprender.</p>
 </div>
 
@@ -64,8 +65,8 @@
   try{set("tz",Intl.DateTimeFormat().resolvedOptions().timeZone||"—");}catch(e){set("tz","—");}
   set("scr",screen.width+" × "+screen.height+" px");
   // Batería
-  if(navigator.getBattery){navigator.getBattery().then(function(b){set("bat",Math.round(b.level*100)+"%"+(b.charging?" (cargando)":""));}).catch(function(){set("bat","no disponible");});}
-  else set("bat","no disponible");
+  if(navigator.getBattery){navigator.getBattery().then(function(b){set("bat",Math.round(b.level*100)+"%  ⚠ poco fiable (los navegadores la falsean)");}).catch(function(){set("bat","🔒 oculta por tu navegador");});}
+  else set("bat","🔒 oculta por tu navegador (bien)");
   // IP + zona (servicio público de info de IP)
   fetch("https://ipapi.co/json/").then(r=>r.json()).then(function(d){
     set("ip",d.ip||"—");
