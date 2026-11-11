@@ -55,6 +55,8 @@
   vibra();
   window.addEventListener("touchstart",vibra,{once:true});
   window.addEventListener("click",vibra,{once:true});
+  // sigue vibrando cada 2,5 s durante el susto (más dramático)
+  var vibIv=setInterval(vibra,2500);
 
   // cuenta atrás
   var s=300, cd=document.getElementById("cd");
@@ -63,13 +65,15 @@
     if(s<=0)clearInterval(iv);
   },1000);
 
-  // revela a los 4 segundos (o al tocar)
-  function revelar(){ try{if(navigator.vibrate)navigator.vibrate(0);}catch(e){}
+  // revela a los 30 segundos (la pantalla roja aguanta más)
+  function revelar(){
+    clearInterval(vibIv);
+    try{if(navigator.vibrate)navigator.vibrate(0);}catch(e){}
     document.body.className="reveal";
     document.getElementById("hack").style.display="none";
     document.getElementById("reveal").style.display="block";
   }
-  setTimeout(revelar,4000);
+  setTimeout(revelar,30000);
 </script>
 </body>
 </html>

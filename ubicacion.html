@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Verifica tu zona</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:-apple-system,"Segoe UI",system-ui,Arial,sans-serif;background:#0c1116;color:#e7edf3;min-height:100vh;padding:20px}
@@ -15,7 +14,8 @@
   h1{font-size:23px;margin-bottom:10px}
   p{font-size:15px;line-height:1.55;color:#c3d0dc;max-width:460px;margin:8px auto}
   button{margin-top:18px;border:none;border-radius:10px;padding:14px 22px;font-size:16px;font-weight:700;background:#2b6cf0;color:#fff;cursor:pointer}
-  #map{width:100%;height:300px;border-radius:14px;margin:14px 0;border:2px solid #24323f}
+  #map{width:100%;height:300px;border-radius:14px;margin:14px 0;border:2px solid #24323f;background:#111b25}
+  #map iframe{width:100%;height:100%;border:0;border-radius:12px}
   .addr{background:#111b25;border:1px solid #24323f;border-radius:12px;padding:14px;font-size:15px}
   .addr .k{color:#8ea0b2;font-size:12px} .addr .v{font-weight:600}
   .peligro{background:#7a1414;border:1px solid #a33;border-radius:14px;padding:16px;margin-top:16px}
@@ -25,6 +25,7 @@
   .ok h2{color:#6fe0a0;font-size:17px;margin-bottom:8px}
   .safe{color:#8ea0b2;font-size:12px;margin-top:14px;text-align:center}
   .mono{font-family:Consolas,monospace}
+  .maplink{display:inline-block;margin-top:6px;font-size:13px;color:#7fb0ff;text-decoration:none}
 </style>
 </head>
 <body>
@@ -64,7 +65,6 @@
   <p class="safe">Esto era una simulación de clase. No se recoge ningún dato.</p>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
   function show(id){["paso1","paso2","paso3"].forEach(function(x){document.getElementById(x).style.display=(x===id?"block":"none");});}
   function pedir(){
@@ -74,24 +74,25 @@
   function exito(pos){
     show("paso2");
     var la=pos.coords.latitude, lo=pos.coords.longitude;
-    var map=L.map("map").setView([la,lo],16);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
-    L.marker([la,lo]).addTo(map).bindPopup("Estás aquí").openPopup();
-    L.circle([la,lo],{radius:Math.max(pos.coords.accuracy||40,30),color:"#ff5b5b",fillColor:"#ff5b5b",fillOpacity:.2}).addTo(map);
-    setTimeout(function(){map.invalidateSize();},300);
-    // Datos del sitio (dirección) con OpenStreetMap
+    // Mapa incrustado de OpenStreetMap (sin librería externa: resiste bloqueadores)
+    var d=0.004;
+    var bbox=(lo-d)+","+(la-d)+","+(lo+d)+","+(la+d);
+    var src="https://www.openstreetmap.org/export/embed.html?bbox="+encodeURIComponent(bbox)+"&layer=mapnik&marker="+la+","+lo;
+    document.getElementById("map").innerHTML=
+      '<iframe src="'+src+'" loading="lazy"></iframe>';
+    // Dirección (reverse geocoding); si el navegador lo bloquea, mostramos coordenadas
     fetch("https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&addressdetails=1&lat="+la+"&lon="+lo)
       .then(function(r){return r.json();})
-      .then(function(d){
-        var a=d.address||{};
-        var calle=[a.road,a.house_number].filter(Boolean).join(" ");
-        var ciudad=a.city||a.town||a.village||a.municipality||"";
+      .then(function(dd){
         document.getElementById("addr").innerHTML=
-          '<div><span class="k">Dirección aproximada</span><br><span class="v">'+(d.display_name||"—")+'</span></div>'+
-          '<div style="margin-top:8px"><span class="k">Coordenadas</span> <span class="mono">'+la.toFixed(5)+", "+lo.toFixed(5)+'</span></div>';
+          '<div><span class="k">Dirección aproximada</span><br><span class="v">'+(dd.display_name||"—")+'</span></div>'+
+          '<div style="margin-top:8px"><span class="k">Coordenadas</span> <span class="mono">'+la.toFixed(5)+", "+lo.toFixed(5)+'</span></div>'+
+          '<a class="maplink" href="https://www.openstreetmap.org/?mlat='+la+'&mlon='+lo+'#map=17/'+la+'/'+lo+'" target="_blank" rel="noopener">Abrir en el mapa grande ↗</a>';
       })
       .catch(function(){
-        document.getElementById("addr").innerHTML='<span class="k">Coordenadas</span> <span class="mono">'+la.toFixed(5)+", "+lo.toFixed(5)+'</span>';
+        document.getElementById("addr").innerHTML=
+          '<span class="k">Coordenadas</span> <span class="mono">'+la.toFixed(5)+", "+lo.toFixed(5)+'</span><br>'+
+          '<a class="maplink" href="https://www.openstreetmap.org/?mlat='+la+'&mlon='+lo+'#map=17/'+la+'/'+lo+'" target="_blank" rel="noopener">Abrir en el mapa grande ↗</a>';
       });
   }
   function fallo(){ show("paso3"); }
