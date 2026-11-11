@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Verificación de seguridad</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI",system-ui,Arial,sans-serif;min-height:100vh;
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;transition:background .4s}
+  body.scan{background:#0c1116;color:#dfe6ee}
+  body.alert{background:#7b1010;color:#fff}
+  body.reveal{background:linear-gradient(160deg,#12603f,#0b3b2e);color:#fff}
+  .wrap{max-width:460px;width:100%;animation:fade .4s}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+  .spin{width:54px;height:54px;border:5px solid #ffffff22;border-top-color:#4be08a;border-radius:50%;
+    margin:0 auto 20px;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .big{font-size:60px;margin-bottom:10px}
+  h1{font-size:26px;margin-bottom:14px;line-height:1.25}
+  p{font-size:16px;line-height:1.55;margin:10px 0;opacity:.96}
+  .card{background:#ffffff14;border-radius:16px;padding:18px;margin-top:18px;text-align:left}
+  .card h2{font-size:16px;margin-bottom:10px}
+  .card ul{margin:0;padding-left:20px;font-size:15px}
+  .card li{margin:7px 0}
+  .safe{margin-top:18px;font-size:13px;opacity:.8}
+  .sim-tag{position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#c0392b;color:#fff;
+    font-weight:700;font-size:12px;letter-spacing:.5px;padding:5px 14px;border-radius:20px;display:none}
+  body.reveal .sim-tag{display:block}
+</style>
+</head>
+<body class="scan">
+<div class="sim-tag">SIMULACIÓN · DEMO DE CLASE</div>
+
+<div class="wrap" id="scan">
+  <div class="spin"></div>
+  <h1>Verificando tu dispositivo…</h1>
+  <p>Comprobando la seguridad de tu conexión.</p>
+</div>
+
+<div class="wrap" id="alert" style="display:none">
+  <div class="big">⚠️</div>
+  <h1>Acceso detectado</h1>
+  <p>Se ha registrado tu dispositivo…</p>
+</div>
+
+<div class="wrap" id="reveal" style="display:none">
+  <div class="big">🎣</div>
+  <h1>¡Te hemos pillado!</h1>
+  <p>Esto es una <b>demostración de clase</b>. Acabas de abrir un enlace de un QR que no controlabas.</p>
+  <p>Si esto fuera un ataque real, aquí te estarían <b>robando la contraseña</b> o colándote un <b>virus</b> en el móvil.</p>
+  <div class="card">
+    <h2>Cómo protegerte</h2>
+    <ul>
+      <li>No escanees QR de pegatinas sueltas (parquímetros, cartas, buzones).</li>
+      <li>Antes de abrir, mira la dirección que te enseña la cámara.</li>
+      <li>Nunca pagues ni metas tus datos en la web a la que lleva un QR.</li>
+      <li>Para pagar, usa la máquina oficial o la app de siempre.</li>
+    </ul>
+  </div>
+  <p class="safe">Tranquilo: esta página no recoge ningún dato tuyo. Es solo para aprender.</p>
+</div>
+
+<script>
+  function show(id,cls){document.body.className=cls;["scan","alert","reveal"].forEach(x=>document.getElementById(x).style.display=x===id?"block":"none");}
+  setTimeout(()=>show("alert","alert"),1800);
+  setTimeout(()=>show("reveal","reveal"),3200);
+</script>
+</body>
+</html>
